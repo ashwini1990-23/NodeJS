@@ -58,6 +58,7 @@ const tempCard = fs.readFileSync(
   `${__dirname}/templates/template-card.html`,
   'utf-8'
 );
+// console.log(tempCard);
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObject = JSON.parse(data);
