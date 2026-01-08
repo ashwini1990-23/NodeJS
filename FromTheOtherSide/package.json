@@ -1,0 +1,12 @@
+{
+  "name": "from-the-other-side",
+  "version": "1.0.0",
+  "description": "A paltform for sharing spooky sightings",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "ashwini patil",
+  "license": "ISC"
+}
