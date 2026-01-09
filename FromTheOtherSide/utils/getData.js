@@ -11,6 +11,4 @@ export async function getData() {
     console.log(err);
     return [];
   }
-
-  return "I am from getData()";
 }
