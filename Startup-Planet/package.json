@@ -1,0 +1,19 @@
+{
+  "name": "startup-planet",
+  "version": "1.0.0",
+  "description": "a dataset of the world's most promising startup",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "ashwini patil",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
