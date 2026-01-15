@@ -10,6 +10,11 @@ async function logTable() {
 
   try {
     const products = await db.all(`Select * from products`);
+    /* Neater table display
+    const displayItems = products.map(({ id, title, artist, year, stock }) => {
+      return { id, title, artist, year, stock };
+    }); 
+    */
     console.table(products);
   } catch (err) {
     console.log(`Error logging table`, err);
