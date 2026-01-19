@@ -1,4 +1,7 @@
 import validator from "validator";
+import bcrypt from "bcryptjs";
+import { getDBConnection } from "../db/db.js";
+
 export async function registerUser(req, res) {
   console.log("req.body: ", req.body);
 
@@ -22,5 +25,31 @@ export async function registerUser(req, res) {
     return res.status(400).json({ error: "Invalid Email format." });
   }
 
-  console.log(req.body);
+  try {
+    const db = await getDBConnection();
+    const existing = await db.get(
+      `select id from users where username=? or email=?`,
+      [username, email],
+    );
+
+    if (existing) {
+      return res
+        .status(400)
+        .json({ error: "Email or username already in use." });
+    }
+
+    const hashedPassowrd = await bcrypt.hash(password, 10);
+
+    const result = await db.run(
+      `insert into users(name,username,email,password) values(?,?,?,?)`,
+      [name, username, email, hashedPassowrd],
+    );
+    console.log(result);
+    req.session.userId = result.lastID;
+
+    res.status(201).json({ message: "User registered" });
+  } catch (err) {
+    console.log("Registration error:", err.message);
+    res.status(500).json({ error: "Registration failed. Please try again." });
+  }
 }

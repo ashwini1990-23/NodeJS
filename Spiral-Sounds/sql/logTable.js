@@ -8,14 +8,29 @@ async function logTable() {
     driver: sqlite3.Database,
   });
 
-  try {
+  /*   ----
+ try {
     const products = await db.all(`Select * from products`);
     /* Neater table display
     const displayItems = products.map(({ id, title, artist, year, stock }) => {
       return { id, title, artist, year, stock };
     }); 
     */
-    console.table(products);
+  /*   console.table(products);
+  } catch (err) {
+    console.log(`Error logging table`, err);
+  } finally {
+    await db.close();
+  }
+ ---- */
+  try {
+    const users = await db.all(`Select * from users`);
+    /* Neater table display
+    const displayItems = products.map(({ id, title, artist, year, stock }) => {
+      return { id, title, artist, year, stock };
+    }); 
+    */
+    console.table(users);
   } catch (err) {
     console.log(`Error logging table`, err);
   } finally {
