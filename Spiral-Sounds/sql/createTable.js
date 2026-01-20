@@ -21,7 +21,7 @@ async function createTable() {
   )
   `);
   */
-  await db.exec(`
+  /* await db.exec(`
   create table if not exists users(
   id integer primary key autoincrement,
   name text,
@@ -29,6 +29,18 @@ async function createTable() {
   username text unique not null,
   password text not null,
   created_at datetime default current_timestamp
+  )
+  `);
+  */
+
+  await db.exec(`
+  create table if not exists cart_items(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  user_id INTEGER NOT NULL,
+                  product_id INTEGER NOT NULL,
+                  quantity INTEGER NOT NULL DEFAULT 1,
+                  FOREIGN KEY (user_id) REFERENCES users(id),
+                  FOREIGN KEY (product_id) REFERENCES products(id)
   )
   `);
 

@@ -2,12 +2,16 @@ import express from "express";
 import { productsRouter } from "./routes/products.js";
 import { authRouter } from "./routes/auth.js";
 import session from "express-session";
+import dotenv from "dotenv";
+import { meRouter } from "./routes/me.js";
+
+dotenv.config();
 
 const PORT = 8000;
 
 const app = express();
 
-const secret = process.env.SPIRAL_SESSION_SECRET || "jellyfish-baskingshark";
+const secret = process.env.SPIRAL_SESSION_SECRET;
 
 // Parsing incoming JSON and putting results in req.body
 app.use(express.json());
@@ -24,6 +28,7 @@ app.use(
 app.use(express.static("public"));
 
 app.use("/api/products", productsRouter);
+app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
 
 app
