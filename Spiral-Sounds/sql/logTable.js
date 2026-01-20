@@ -24,7 +24,7 @@ async function logTable() {
   }
  ---- */
   try {
-    const users = await db.all(`Select * from users`);
+    const users = await db.all(`Select * from cart_items `);
     /* Neater table display
     const displayItems = products.map(({ id, title, artist, year, stock }) => {
       return { id, title, artist, year, stock };
