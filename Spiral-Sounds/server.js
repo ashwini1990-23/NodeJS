@@ -4,6 +4,7 @@ import { authRouter } from "./routes/auth.js";
 import session from "express-session";
 import dotenv from "dotenv";
 import { meRouter } from "./routes/me.js";
+import { cartRouter } from "./routes/cart.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use(express.static("public"));
 app.use("/api/products", productsRouter);
 app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/cart", cartRouter);
 
 app
   .listen(PORT, () => console.log(`Server listening on port: ${PORT}`))
