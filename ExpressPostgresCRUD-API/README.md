@@ -56,22 +56,22 @@ The server will run on:
 http://localhost:5000
 
 📌 API Endpoints
-Create User: POST /api/user
-Get All Users: GET /api/user
-Get User by ID: GET /api/user/:id
-Update User: PUT /api/user/:id
-Delete User: DELETE /api/user/:id
+1. Create User: POST /api/user
+2. Get All Users: GET /api/user
+3. Get User by ID: GET /api/user/:id
+4. Update User: PUT /api/user/:id
+5. Delete User: DELETE /api/user/:id
 
 🧪 Validation
 
-All incoming request bodies are validated using Joi
-Prevents invalid or malformed data from reaching the database
+* All incoming request bodies are validated using Joi
+* Prevents invalid or malformed data from reaching the database
 
 🌱 Future Improvements
 
-Authentication & Authorization (JWT)
-Docker support
-Unit & integration tests
+* Authentication & Authorization (JWT)
+* Docker support
+* Unit & integration tests
 
 
 
