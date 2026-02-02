@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 
 import { contactRouter } from "./routes/contactRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { connectDb } from "./config/dbConnection.js";
 
 dotenv.config();
+connectDb();
 
 const app = express();
 
