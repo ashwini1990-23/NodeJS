@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import { User } from "../models/userModel.js";
+import { Otp } from "../models/otpModel.js";
+import { sendEmail } from "../config/sendEmail.js";
 
 dotenv.config();
 //@desc Register a user
@@ -53,7 +55,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         user: { username: user.username, email: user.email, id: user.id },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "1m" },
     );
     res.status(200).json({ accessToken });
   } else {
@@ -68,4 +70,76 @@ export const loginUser = asyncHandler(async (req, res) => {
 //@access private
 export const currentUser = asyncHandler(async (req, res) => {
   res.json(req.user);
+});
+
+//@desc Forgot password
+//@route GET /api/users/forgot-password
+//@access private
+export const handleForgotPassword = asyncHandler(async (req, res) => {
+  console.log("Inside forgot password");
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400);
+    throw new Error("User does not exist");
+  }
+  const otp = Math.floor(100000 + Math.random() * 999999); // 6 digit random otp
+  console.log("OTP is:", otp);
+
+  const newOtp = new Otp({ email, otp });
+  await newOtp.save();
+
+  const message = `Your verification code for password reset is: ${otp}`;
+  await sendEmail(email, "Reset Password", message);
+
+  res.status(200).json({ message: "OTP sent to your email" });
+});
+
+//@desc Verify OTp
+//@route GET /api/users/verify-otp
+//@access private
+export const handleVerifyOtp = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  const otpExists = await Otp.findOne({ email, otp });
+  if (
+    !otpExists ||
+    Date.now() > otpExists.createdAt.getTime() + 60 * 60 * 1000
+  ) {
+    res.status(400);
+    throw new Error("Invalid or expired OTP");
+  }
+  res.status(200).json({ message: "OTP verification successful" });
+  // res.status(400);
+  // throw new Error("Invalid credentials");
+});
+
+//@desc Reset password
+//@route GET /api/users/reset-password
+//@access private
+export const handleResetPassword = asyncHandler(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  const otpExists = await Otp.findOne({ email, otp });
+  if (
+    !otpExists ||
+    Date.now() > otpExists.createdAt.getTime() + 60 * 60 * 1000
+  ) {
+    res.status(400);
+    throw new Error("Invalid or expired OTP");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(404);
+    throw new Error("User does not exist");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+  user.password = hashedPassword;
+  await user.save();
+  await Otp.deleteMany({ email });
+  res.status(200).json({ message: "Password reset successfully" });
 });
