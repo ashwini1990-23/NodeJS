@@ -2,6 +2,7 @@ import express from "express";
 import {
   currentUser,
   handleForgotPassword,
+  handleLogOut,
   handleResetPassword,
   handleVerifyOtp,
   loginUser,
@@ -22,3 +23,5 @@ userRouter.post("/forgot-password", handleForgotPassword);
 userRouter.post("/verify-otp", handleVerifyOtp);
 
 userRouter.post("/reset-password", handleResetPassword);
+
+userRouter.get("/logout", handleLogOut);

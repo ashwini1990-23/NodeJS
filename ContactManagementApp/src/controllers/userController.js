@@ -50,17 +50,19 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   // Compare password with hashedpassword
   if (user && (await bcrypt.compare(password, user.password))) {
-    const accessToken = jwt.sign(
-      {
-        user: { username: user.username, email: user.email, id: user.id },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1m" },
-    );
-    res.status(200).json({ accessToken });
+    const payload = {
+      username: user.username,
+      email: user.email,
+      id: user.id,
+    };
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "1m",
+    });
+    res.cookie("token", accessToken);
+    res.status(200).json({ success: true, message: "Login successful" });
   } else {
-    res.status(401);
-    throw new Error("Email or password is not valid");
+    res.status(404);
+    throw new Error("Email or Password is not valid");
   }
   // res.json({ message: "Login the user" });
 });
@@ -74,7 +76,7 @@ export const currentUser = asyncHandler(async (req, res) => {
 
 //@desc Forgot password
 //@route GET /api/users/forgot-password
-//@access private
+//@access public
 export const handleForgotPassword = asyncHandler(async (req, res) => {
   console.log("Inside forgot password");
   const { email } = req.body;
@@ -98,7 +100,7 @@ export const handleForgotPassword = asyncHandler(async (req, res) => {
 
 //@desc Verify OTp
 //@route GET /api/users/verify-otp
-//@access private
+//@access public
 export const handleVerifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
@@ -117,7 +119,7 @@ export const handleVerifyOtp = asyncHandler(async (req, res) => {
 
 //@desc Reset password
 //@route GET /api/users/reset-password
-//@access private
+//@access public
 export const handleResetPassword = asyncHandler(async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
@@ -142,4 +144,12 @@ export const handleResetPassword = asyncHandler(async (req, res) => {
   await user.save();
   await Otp.deleteMany({ email });
   res.status(200).json({ message: "Password reset successfully" });
+});
+
+//@desc Logout a user
+//@route GET /api/users/logout
+//@access public
+export const handleLogOut = asyncHandler((req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ success: true, message: "Logged out successfuly" });
 });

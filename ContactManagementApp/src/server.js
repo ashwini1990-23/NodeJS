@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 import { contactRouter } from "./routes/contactRoutes.js";
 import { userRouter } from "./routes/userRoutes.js";
@@ -14,6 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/contacts", contactRouter);
 app.use("/api/users", userRouter);
 app.use(errorHandler);
