@@ -20,4 +20,9 @@ app.use("/api/contacts", contactRouter);
 app.use("/api/users", userRouter);
 app.use(errorHandler);
 
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     message: "We have mounted the volume to running container.",
+//   });
+// });
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

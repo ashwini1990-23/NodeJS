@@ -7,6 +7,7 @@ import {
   handleVerifyOtp,
   loginUser,
   registerUser,
+  handleChangePassword,
 } from "../controllers/userController.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 
@@ -25,3 +26,5 @@ userRouter.post("/verify-otp", handleVerifyOtp);
 userRouter.post("/reset-password", handleResetPassword);
 
 userRouter.get("/logout", handleLogOut);
+
+userRouter.patch("/change-password", validateToken, handleChangePassword);

@@ -53,10 +53,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     const payload = {
       username: user.username,
       email: user.email,
-      id: user.id,
+      userId: user._id,
     };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1m",
+      expiresIn: "10m",
     });
     res.cookie("token", accessToken);
     res.status(200).json({ success: true, message: "Login successful" });
@@ -152,4 +152,33 @@ export const handleResetPassword = asyncHandler(async (req, res) => {
 export const handleLogOut = asyncHandler((req, res) => {
   res.clearCookie("token");
   res.status(200).json({ success: true, message: "Logged out successfuly" });
+});
+
+//@desc Change Password
+//@route GET /api/users/change-password
+//@access public
+export const handleChangePassword = asyncHandler(async (req, res) => {
+  console.log("Inside Change Password");
+  const { oldPassword, newPassword } = req.body;
+  // const userId = req.user.id;
+  const userExists = await User.findById(req.user.userId);
+  if (!userExists) {
+    res.status(404);
+    throw new Error("User not found. Sign in first");
+  }
+  const comaprePasswords = await bcrypt.compare(
+    oldPassword,
+    userExists.password,
+  );
+  if (!comaprePasswords) {
+    res
+      .status(404)
+      .json({ message: "The current password you entered is wrong" });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  userExists.password = hashedPassword;
+  await userExists.save();
+  res
+    .status(200)
+    .json({ success: true, message: "Password changed successfuly" });
 });
